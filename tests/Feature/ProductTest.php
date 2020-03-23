@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Product;
@@ -36,5 +37,26 @@ class ProductTest extends TestCase
         $response->assertStatus(200)
             ->assertSee('Car')
             ->assertSee('100');
+    }
+
+    public function test_a_product_can_belongs_to_a_category(){
+        // arrange
+        $product = factory(Product::class)->create();
+        $category = factory(Category::class)->create();
+
+        // assert
+        $this->assertDatabaseMissing('products', [
+            'id' => $product->id,
+            'category_id' => $category->id,
+        ]);
+
+        // act
+        $product->setCategory($category);
+
+        // assert
+        $this->assertDatabaseHas('products', [
+            'id' => $product->id,
+            'category_id' => $category->id,
+        ]);
     }
 }
