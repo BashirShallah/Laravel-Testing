@@ -59,4 +59,17 @@ class ProductTest extends TestCase
             'category_id' => $category->id,
         ]);
     }
+
+    public function test_it_prevent_changing_the_product_category(){
+        $product = factory(Product::class)->create();
+        $category = factory(Category::class)->create();
+        $category2 = factory(Category::class)->create();
+
+        $product->setCategory($category);
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You can not change the product category');
+
+        $product->setCategory($category2);
+    }
 }
